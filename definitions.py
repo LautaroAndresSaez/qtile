@@ -1,17 +1,6 @@
-font = 'DejaVu Sans Mono'
-
-# COMMON KEYS
-UP = "i"
-DOWN = "k"
-LEFT = "j"
-RIGHT = "l"
-
 # ICONS
 SEPARATOR_ICON = '\ue0b2'
 
-CODE_ICON = '\uf121'
-MUSIC_ICON = '\uf025'
-MAIN_ICON = '\uf268'
 
 BATTERY_FULL_ICON = '\uf240'
 BATTERY_75_ICON = '\uf241'

@@ -1,0 +1,21 @@
+{
+  "font": "UbuntuMono Nerd Font",
+  "keys": {
+    "up": "i",
+    "down": "k",
+    "left": "j",
+    "right": "l"
+  },
+  "colors": {
+    "background": "#282a36",
+    "foreground": "#f8f8f2",
+    "error": "#ff5555",
+    "success": "#50fa7b",
+    "warn": "#f1fa8c",
+    "gray": "#44475a",
+    "light_blue": "#6272a4",
+    "primary": "#bd93f9",
+    "secondary": "#8be9fd",
+    "accent": "#ff79c6"
+  }
+}
