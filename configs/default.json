@@ -14,8 +14,10 @@
     "warn": "#f1fa8c",
     "gray": "#44475a",
     "light_blue": "#6272a4",
-    "primary": "#bd93f9",
-    "secondary": "#8be9fd",
-    "accent": "#ff79c6"
-  }
+    "color1": "#bd93f9",
+    "color2": "#ff79c6",
+    "color3": "#8be9fd"
+  },
+  "workspaces": ["\uf268", "\uf121", "\uf025", "\uf21f"],
+  "wallpaper": "/home/lsaez/Images/images.png"
 }
