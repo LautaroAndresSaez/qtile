@@ -1,5 +1,6 @@
 from libqtile.lazy import lazy
 from libqtile.config import Key
+from libqtile.utils import guess_terminal
 
 
 class Singleton(object):
@@ -12,7 +13,7 @@ class Singleton(object):
 
 
 class KeyBuilder(Singleton):
-    def __init__(self, settings, mod="mod4", terminal="alacritty"):
+    def __init__(self, settings, mod="mod4", terminal=guess_terminal()):
         self._mod = mod
         self._terminal = terminal
         self._keys = [
@@ -66,8 +67,10 @@ class KeyBuilder(Singleton):
             Key([mod, "control"], "r", lazy.reload_config(),
                 desc="Reload the config"),
             Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-            Key([mod], "r", lazy.spawncmd(),
+            Key([mod, "shift"], "r", lazy.spawncmd(),
                 desc="Spawn a command using a prompt widget"),
+            Key([mod, "control"], "r", lazy.spawn("rofi -show")),
+            Key([mod], "r", lazy.spawn("rofi -show drun"))
         ]
 
     @property
