@@ -23,13 +23,15 @@ class ScreensBuilder():
 
                         widget.Systray(),
                         widget.TextBox(background=settings.colors.background, fmt=SEPARATOR_ICON,
-                                       foreground=settings.colors.color2, fontsize=30, padding=0),
-                        widget.Memory(
-                            measure_mem="G", format="󰍛 {MemUsed:.1f}{mm}/{MemTotal:.0f}{mm}", background=settings.colors.color2),
-                        widget.TextBox(background=settings.colors.color2, fmt=SEPARATOR_ICON,
                                        foreground=settings.colors.color1, fontsize=30, padding=0),
-                        widget.Battery(format="{percent:2.0%}{char}", charge_char="󰂄", discharge_char="󱊡", empty_char="󰂎", full_char="󰁹",
-                                       not_charging_char="󰂃", unknown_char="󱉝", update_interval=5, background=settings.colors.color1),
+                        widget.Backlight(background=settings.colors.color1, backlight_name="intel_backlight",
+                                         change_command="brightnessctl set {0}", min_brigthness=10, fmt='\uf522 {}', step=5),
+                        widget.Memory(
+                            measure_mem="G", format="󰍛 {MemUsed:.1f}{mm}/{MemTotal:.0f}{mm}", background=settings.colors.color1),
+                        widget.Battery(format="{char} {percent:2.0%}", charge_char="󰂄", discharge_char="󱊡", empty_char="󰂎", full_char="󰁹",
+                                       not_charging_char="󰂃", unknown_char="󱉝", update_interval=1,
+                                       notify_below=60,
+                                       background=settings.colors.color1),
                         widget.TextBox(background=settings.colors.color1, fmt=SEPARATOR_ICON,
                                        foreground=settings.colors.background, fontsize=30, padding=0),
                         widget.Clock(format="%a %I:%M %p %d/%m/%Y",
@@ -46,5 +48,5 @@ class ScreensBuilder():
     def screens(self):
         return self._screens
 
-    def _add_rigth_widget(self, widget, background, next_brackground_color):
+    def _add_section(self, widgets, background, next_brackground_color):
         pass

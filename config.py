@@ -1,8 +1,10 @@
 import os
+import subprocess
 
 from libqtile import bar, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
+from libqtile import hook
 
 from settings.qtileManager import QTileManager
 
@@ -41,7 +43,6 @@ widget_defaults = dict(
     background=settings.colors.background
 )
 extension_defaults = widget_defaults.copy()
-
 
 
 # Drag floating layouts.
@@ -87,3 +88,8 @@ wl_xcursor_theme = None
 wl_xcursor_size = 24
 
 wmname = "LG3D"
+
+
+@hook.subscribe.startup_once
+def autostart():
+    subprocess.Popen(["dunst"])

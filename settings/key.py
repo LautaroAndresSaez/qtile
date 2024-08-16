@@ -1,6 +1,7 @@
 from libqtile.lazy import lazy
 from libqtile.config import Key
 from libqtile.utils import guess_terminal
+from libqtile.widget import backlight
 
 
 class Singleton(object):
@@ -70,18 +71,29 @@ class KeyBuilder(Singleton):
             Key([mod, "shift"], "r", lazy.spawncmd(),
                 desc="Spawn a command using a prompt widget"),
             Key([mod, "control"], "r", lazy.spawn("rofi -show")),
-            Key([mod], "r", lazy.spawn("rofi -show drun"))
+            Key([mod], "r", lazy.spawn("rofi -show drun")),
+            Key([], "Print", lazy.spawn("flameshot gui")),
+            Key([],
+                "XF86MonBrightnessUp",
+                 lazy.widget['backlight'].change_backlight(
+                     backlight.ChangeDirection.UP)
+            ),
+            Key([],
+                "XF86MonBrightnessDown",
+                lazy.widget['backlight'].change_backlight(
+                    backlight.ChangeDirection.DOWN)
+            )
         ]
 
-    @property
+    @ property
     def keys(self):
         return self._keys
 
-    @property
+    @ property
     def mod(self):
         return self._mod
 
-    @property
+    @ property
     def terminal(self):
         return self._terminal
 
