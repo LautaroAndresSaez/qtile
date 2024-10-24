@@ -3,6 +3,10 @@ from libqtile.config import Key
 from libqtile.utils import guess_terminal
 from libqtile.widget import backlight
 
+import os
+
+SH = "~/.config/qtile/sh"
+
 
 class Singleton(object):
     _instance = None
@@ -44,7 +48,7 @@ class KeyBuilder(Singleton):
                 desc="Grow window down"),
             Key([mod, "control"], settings.keys.up,
                 lazy.layout.grow_up(), desc="Grow window up"),
-            Key([mod], "n", lazy.layout.normalize(),
+            Key([mod, "control"], "n", lazy.layout.normalize(),
                 desc="Reset all window sizes"),
             Key(
                 [mod, "shift"],
@@ -65,8 +69,6 @@ class KeyBuilder(Singleton):
             ),
             Key([mod], "t", lazy.window.toggle_floating(),
                 desc="Toggle floating on the focused window"),
-            Key([mod, "control"], "r", lazy.reload_config(),
-                desc="Reload the config"),
             Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
             Key([mod, "shift"], "r", lazy.spawncmd(),
                 desc="Spawn a command using a prompt widget"),
@@ -75,14 +77,15 @@ class KeyBuilder(Singleton):
             Key([], "Print", lazy.spawn("flameshot gui")),
             Key([],
                 "XF86MonBrightnessUp",
-                 lazy.widget['backlight'].change_backlight(
-                     backlight.ChangeDirection.UP)
-            ),
+                lazy.widget['backlight'].change_backlight(
+                backlight.ChangeDirection.UP)
+                ),
             Key([],
                 "XF86MonBrightnessDown",
                 lazy.widget['backlight'].change_backlight(
                     backlight.ChangeDirection.DOWN)
-            )
+                ),
+            Key([mod], "n", lazy.spawn(f'{SH}/note.sh'))
         ]
 
     @ property

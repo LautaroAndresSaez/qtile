@@ -22,6 +22,7 @@ class ScreensBuilder():
                         ),
 
                         widget.Systray(),
+                        widget.Wlan(),
                         widget.TextBox(background=settings.colors.background, fmt=SEPARATOR_ICON,
                                        foreground=settings.colors.color1, fontsize=30, padding=0),
                         widget.Backlight(background=settings.colors.color1, backlight_name="intel_backlight",
