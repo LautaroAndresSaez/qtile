@@ -4,8 +4,7 @@ import subprocess
 from libqtile import bar, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
-from libqtile import hook
-
+from libqtile import hook, qtile
 from settings.qtileManager import QTileManager
 
 mod = "mod4"
@@ -93,3 +92,9 @@ wmname = "LG3D"
 @hook.subscribe.startup_once
 def autostart():
     subprocess.Popen(["dunst"])
+
+
+@hook.subscribe.screen_change
+def restart_on_randr(_):
+    os.system("~/.config/qtile/monitor_change.sh")
+    qtile.cmd_reload_config()
