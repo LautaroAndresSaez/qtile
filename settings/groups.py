@@ -20,25 +20,23 @@ class GroupsBuilder():
         if len(names) == 0:
             return
         name, *rest = names
-        self._groups.append(Group(name))
-        self._group_shortcuts(name, index)
+        self._groups.append(Group(str(index), label=name))
+        self._group_shortcuts(str(index))
         return self._create_groups(rest, index + 1)
 
-    def _group_shortcuts(self, name: str, index: int):
-        actual_key = str(index)
+    def _group_shortcuts(self, name: str):
         self._keyBuilder.add_keys([
             Key(
                 [self._mod],
-                actual_key,
+                name,
                 lazy.group[name].toscreen(),
                 desc="Switch to group {}".format(name),
             ),
             Key(
                 [self._mod, "shift"],
-                actual_key,
+                name,
                 lazy.window.togroup(name, switch_group=True),
                 desc="Switch to & move focused window to group {}".format(
                     name),
             ),
-
         ])

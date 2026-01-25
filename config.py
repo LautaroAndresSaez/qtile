@@ -6,7 +6,7 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile import hook, qtile
 from settings.qtileManager import QTileManager
-
+from libqtile.backend.wayland import InputConfig
 mod = "mod4"
 terminal = "alacritty"
 
@@ -37,7 +37,7 @@ for vt in range(1, 8):
 
 widget_defaults = dict(
     font=settings.font,
-    fontsize=15,
+    fontsize=18,
     padding=3,
     background=settings.colors.background
 )
@@ -87,7 +87,6 @@ wl_xcursor_theme = None
 wl_xcursor_size = 24
 
 wmname = "LG3D"
-
 
 @hook.subscribe.startup_once
 def autostart():

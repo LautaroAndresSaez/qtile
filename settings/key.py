@@ -98,19 +98,11 @@ class KeyBuilder(Singleton):
             Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
             Key([mod, "shift"], "r", lazy.spawncmd(),
                 desc="Spawn a command using a prompt widget"),
-            Key([mod, "control"], "r", lazy.spawn("rofi -show")),
-            Key([mod], "r", lazy.spawn("rofi -show drun")),
+            Key([mod, "control"], "r", lazy.spawn("wofi --show")),
+            Key([mod], "r", lazy.spawn("wofi --show drun")),
             Key([], "Print", lazy.spawn("flameshot gui")),
-            Key([],
-                "XF86MonBrightnessUp",
-                lazy.widget['backlight'].change_backlight(
-                backlight.ChangeDirection.UP)
-                ),
-            Key([],
-                "XF86MonBrightnessDown",
-                lazy.widget['backlight'].change_backlight(
-                    backlight.ChangeDirection.DOWN)
-                ),
+            Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Brillo +"),
+            Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Brillo -"),
             
         ]
 
