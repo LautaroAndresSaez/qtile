@@ -1,27 +1,11 @@
 from libqtile.lazy import lazy
 from libqtile.config import Key
 from libqtile.utils import guess_terminal
-from libqtile.widget import backlight
-
-import os
 
 SH = "~/.config/qtile/sh"
 
-
-class Singleton(object):
-    _instance = None
-
-    def __new__(class_, *args, **kwargs):
-        if not isinstance(class_._instance, class_):
-            class_._instance = object.__new__(class_)
-        return class_._instance
-
-
-class KeyBuilder(Singleton):
-    def __init__(self, settings, mod="mod4", terminal=guess_terminal()):
-        self._mod = mod
-        self._terminal = terminal
-        self._keys = [
+def add_base_keys(settings, mod="mod4", terminal=guess_terminal(), keys: list[Key] = []) -> list[Key]:
+    return keys +  [
             Key([mod], "Left", lazy.layout.left(),
                 desc="Move focus to left"),
             Key([mod], "Right", lazy.layout.right(),
@@ -48,7 +32,6 @@ class KeyBuilder(Singleton):
                 desc="Grow window down"),
             Key([mod, "control"], "Up",
                 lazy.layout.grow_up(), desc="Grow window up"),
-
             Key([mod], settings.keys.left, lazy.layout.left(),
                 desc="Move focus to left"),
             Key([mod], settings.keys.right, lazy.layout.right(),
@@ -100,26 +83,16 @@ class KeyBuilder(Singleton):
                 desc="Spawn a command using a prompt widget"),
             Key([mod, "control"], "r", lazy.spawn("wofi --show")),
             Key([mod], "r", lazy.spawn("wofi --show drun")),
-            Key([], "Print", lazy.spawn("flameshot gui")),
+            
+            Key([], "Print", lazy.spawn("bash -c 'grim -g \"$(slurp)\" - | swappy -f -'"),
+            desc="Seleccionar área y editar captura"),
+
+            Key([], "XF86AudioLowerVolume", lazy.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-"), lazy.widget["genpolltext"].force_update()),
+            Key([], "XF86AudioRaiseVolume", lazy.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"), lazy.widget["genpolltext"].force_update()),
+            Key([], "XF86AudioMute", lazy.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), lazy.widget["genpolltext"].force_update()),
+
             Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl set +5%"), desc="Brillo +"),
             Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl set 5%-"), desc="Brillo -"),
-            
-        ]
+    ]
 
-    @ property
-    def keys(self):
-        return self._keys
 
-    @ property
-    def mod(self):
-        return self._mod
-
-    @ property
-    def terminal(self):
-        return self._terminal
-
-    def add_key(self, key: Key):
-        self._keys.append(key)
-
-    def add_keys(self, keys: list[Key]):
-        self._keys.extend(keys)

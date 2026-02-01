@@ -4,7 +4,7 @@ import json
 from types import SimpleNamespace
 
 from .layout import LayoutBuilder
-from .key import KeyBuilder
+from .keys import KeyBuilder
 from .groups import GroupsBuilder
 from .screens import ScreensBuilder
 

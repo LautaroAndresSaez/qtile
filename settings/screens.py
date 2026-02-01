@@ -1,11 +1,9 @@
-from libqtile import widget, bar
+from libqtile import widget, bar, qtile
 from libqtile.config import Screen
+from libqtile.lazy import lazy
 import subprocess
+
 SEPARATOR_ICON = '\ue0b2'
-
-import subprocess
-
-import subprocess
 
 WIFI_ICONS = [
     "󰤯",  # 0–20%
@@ -14,6 +12,36 @@ WIFI_ICONS = [
     "󰤥",  # 61–80%
     "󰤨",  # 81–100%
 ]
+
+def get_volume_info():
+    try:
+        # Ejecutamos el comando
+        out = subprocess.check_output(["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"], text=True).strip()
+        
+        # out será algo como "Volume: 0.45" o "Volume: 1.00 [MUTED]"
+        if "[MUTED]" in out:
+            return "󰝟 Muted"
+        
+        # Extraemos solo el número (ej. "0.45")
+        value_str = out.split(":")[1].split("[")[0].strip()
+        vol_float = float(value_str)
+        
+        # Convertimos a porcentaje entero (1.0 -> 100%)
+        vol_percent = int(vol_float * 100)
+        
+        # Iconos dinámicos según el porcentaje
+        if vol_percent == 0:
+            icon = "󰝟"
+        elif vol_percent < 33:
+            icon = "󰕿"
+        elif vol_percent < 66:
+            icon = "󰖀"
+        else:
+            icon = "󰕾"
+            
+        return f"{icon} {vol_percent}%"
+    except Exception:
+        return "󰝟 --"
 
 def wifi_info():
     try:
@@ -45,9 +73,9 @@ def wifi_info():
     return "󰤭  No WiFi"
 
 
-class ScreensBuilder():
-    def __init__(self, settings):
-        widgets = [
+def create_screens(settings) -> list[Screen]:
+    screens = []
+    widgets = [
             widget.CurrentLayoutIcon(scale=.75),
             widget.GroupBox(),
             widget.Prompt(),
@@ -58,10 +86,8 @@ class ScreensBuilder():
                 },
                 name_transform=lambda name: name.upper(),
             ),
-
-            widget.Systray(),
-           widget.TextBox(background=settings.colors.background, fmt=SEPARATOR_ICON,
-                           foreground=settings.colors.color2, fontsize=30, padding=0),
+            widget.TextBox(background=settings.colors.background, fmt=SEPARATOR_ICON,
+                           foreground=settings.colors.color2, fontsize=20, padding=0),
             widget.GenPollText(
                 update_interval=2,
                 func=wifi_info,
@@ -69,12 +95,22 @@ class ScreensBuilder():
                 background=settings.colors.color2
             ),
             widget.TextBox(background=settings.colors.color2, fmt=SEPARATOR_ICON,
-                           foreground=settings.colors.color1, fontsize=30, padding=0),
+                           foreground=settings.colors.color1, fontsize=20, padding=0),
+            widget.GenPollText(
+                func=get_volume_info,
+                update_interval=1,
+                background=settings.colors.color1,
+                mouse_callbacks={
+                    'Button1': lazy.spawn("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),
+                    'Button4': lazy.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 1%+"), # Scroll up
+                    'Button5': lazy.spawn("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 1%-"), # Scroll down
+                }
+            ),
             widget.Backlight(
                 background=settings.colors.color1, 
                 backlight_name="intel_backlight",
                 change_command="brightnessctl s {0}%", 
-                min_brigthness=10, 
+                min_brightness=10, 
                 fmt='\uf522 {}', 
                 step=5
             ),
@@ -85,45 +121,17 @@ class ScreensBuilder():
                            notify_below=60,
                            background=settings.colors.color1),
             widget.TextBox(background=settings.colors.color1, fmt=SEPARATOR_ICON,
-                           foreground=settings.colors.background, fontsize=30, padding=0),
+                           foreground=settings.colors.background, fontsize=20, padding=0),
             widget.Clock(format="%a %I:%M %p %d/%m/%Y",
                          background=settings.colors.background),
-        ]
+    ]
 
-        self._screens = [
-            Screen(
-                top=bar.Bar([*widgets], 24),
-                wallpaper=settings.wallpaper,
-                wallpaper_mode="fill"
-            ),
-        ]
-        xrandr = "xrandr | grep -w 'connected' | cut -d ' ' -f 2 | wc -l"
-
-        command = subprocess.run(
-            xrandr,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-
-        if command.returncode != 0:
-            error = command.stderr.decode("UTF-8")
-            print(error)
-            connected_monitors = 1
-        else:
-            connected_monitors = int(command.stdout.decode("UTF-8"))
-
-        if connected_monitors > 1:
-            for _ in range(1, connected_monitors):
-                self._screens.append(Screen(
-                    top=bar.Bar([*widgets], 24),
-                    wallpaper=settings.wallpaper,
-                    wallpaper_mode="fill"
-                ),)
-
-    @property
-    def screens(self):
-        return self._screens
-
-    def _add_section(self, widgets, background, next_brackground_color):
-        pass
+    screens = [
+        Screen(
+            top=bar.Bar([*widgets], 20),
+            wallpaper=settings.wallpaper,
+            wallpaper_mode="fill",
+        ),
+    ]
+    
+    return screens

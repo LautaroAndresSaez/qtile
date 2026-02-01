@@ -1,24 +1,14 @@
-import os
 import subprocess
-
-from libqtile import bar, layout, qtile, widget
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile import hook, qtile, layout
+from libqtile.config import Click, Drag, Key, Match
 from libqtile.lazy import lazy
-from libqtile import hook, qtile
-from settings.qtileManager import QTileManager
-from libqtile.backend.wayland import InputConfig
+
+from settings import build
+
 mod = "mod4"
 terminal = "alacritty"
 
-qtileManager = QTileManager(
-    f'{os.environ["HOME"]}/.config/qtile/settings.default.json')
-
-settings = qtileManager.settings
-
-keys = qtileManager.keys
-layouts = qtileManager.layouts
-groups = qtileManager.groups
-screens = qtileManager.screens
+keys, screens, groups, layouts, settings = build(mod=mod)
 
 # Add key bindings to switch VTs in Wayland.
 # We can't check qtile.core.name in default config as it is loaded before qtile is started
@@ -37,9 +27,11 @@ for vt in range(1, 8):
 
 widget_defaults = dict(
     font=settings.font,
-    fontsize=18,
+    # font="Comic Neue",
+    fontsize=13,
     padding=3,
-    background=settings.colors.background
+    background=settings.colors.background,
+    
 )
 extension_defaults = widget_defaults.copy()
 
@@ -84,16 +76,15 @@ wl_input_rules = None
 
 # xcursor theme (string or None) and size (integer) for Wayland backend
 wl_xcursor_theme = None
-wl_xcursor_size = 24
+wl_xcursor_size = 12
 
 wmname = "LG3D"
 
 @hook.subscribe.startup_once
 def autostart():
-    subprocess.Popen(["dunst"])
+    subprocess.Popen(["xsettingsd"])
 
 
 @hook.subscribe.screen_change
-def restart_on_randr(_):
-    os.system("~/.config/qtile/monitor_change.sh")
+def change_screen():
     qtile.cmd_reload_config()
